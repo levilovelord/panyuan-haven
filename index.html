@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="canopy">
+  <title>阶段性心理成长复盘 · 森林手记</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1. Canopy base adapted to Forest Palette (#3E765D / #EEF5EF / #98B99D) */
+      --background: #FAF8F3;
+      --surface-paper: #FDFCF8;
+      --surface-container-low: #EEF5EF;
+      --surface-container: #E3EDE5;
+      --surface-container-high: #D4E4D7;
+
+      /* Ink (WCAG AA+ contrast) */
+      --on-surface: #1E3228;
+      --on-surface-variant: #465B4F;
+
+      /* Lines & hand-drawn notebook accents */
+      --outline: #6E8778;
+      --outline-variant: #C2D2C6;
+      --outline-sketch: #84A28F;
+
+      /* Forest Accents */
+      --primary: #3E765D;
+      --on-primary: #FFFFFF;
+      --primary-container: #EEF5EF;
+      --on-primary-container: #1C4332;
+      --secondary: #4D6659;
+      --tertiary: #8B572A;
+      --tertiary-container: #F5E5CE;
+      --on-tertiary-container: #5C3512;
+      --chart-sage: #98B99D;
+      --on-chart-sage: #1B3025;
+      --error: #B23A37;
+      --on-error: #FFFFFF;
+
+      /* Data series */
+      --data-1: #3E765D;
+      --data-2: #98B99D;
+      --data-3: #8B572A;
+      --data-4: #4A6D7C;
+      --data-context: #AEBBAE;
+
+      /* Shared Semantic & Focus Tokens */
+      --positive: #2E6B4E;
+      --warning: #945B1E;
+      --focus: #3E765D;
+
+      /* Typography */
+      --font-headline: 'Noto Serif SC', Georgia, serif;
+      --font-body: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+      --font-label: 'Noto Sans SC', 'Geist Mono', monospace;
+      --font-mono: 'Geist Mono', 'Noto Sans SC', monospace;
+
+      /* Narrative Type Scale */
+      --display-size: clamp(2rem, 1.35rem + 2.4vw, 3.125rem);
+      --headline-size: clamp(1.5rem, 1.15rem + 1.25vw, 2.05rem);
+      --subhead-size: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
+      --body-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+      --label-size: 0.8125rem;
+
+      /* Radii & Shadows */
+      --rounded: 0.625rem;
+      --rounded-lg: 1rem;
+      --rounded-xl: 1.25rem;
+      --rounded-full: 9999px;
+      --shadow-soft: 0 4px 18px rgb(30 50 40 / 0.06);
+      --shadow-soft-hover: 0 8px 26px rgb(30 50 40 / 0.10);
+      --shadow-sketch: 3px 3px 0 rgb(152 185 157 / 0.45);
+      --border-soft: 1px solid rgb(194 210 198 / 0.85);
+      --border-sketch: 1.5px dashed var(--outline-sketch);
+      --focus-glow: 0 0 0 3px rgb(62 118 93 / 0.28);
+
+      /* Spacing Scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 140ms;
+      --dur-short: 240ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.68;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    summary:focus-visible,
+    a:focus-visible {
+      outline: 2.5px solid var(--focus);
+      outline-offset: 2px;
+      box-shadow: var(--focus-glow);
+    }
+
+    /* Subtle notebook grid texture on background */
+    .notebook-canvas {
+      background-image:
+        radial-gradient(var(--outline-variant) 0.9px, transparent 0.9px);
+      background-size: 24px 24px;
+      background-position: 0 0;
+      min-height: 100vh;
+    }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-xl);
+      padding: var(--space-lg);
+      max-width: 1140px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Hero Masthead */
+    .hero-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.9fr);
+      gap: var(--space-lg);
+      align-items: center;
+      padding-top: var(--space-md);
+      padding-bottom: var(--space-md);
+      border-bottom: var(--border-sketch);
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--tertiary);
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded-full);
+      margin-bottom: var(--space-md);
+    }
+
+    h1 {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 700;
+      line-height: 1.18;
+      margin: 0 0 var(--space-md) 0;
+      color: var(--on-surface);
+    }
+
+    .hero-lede {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      max-width: 60ch;
+      margin: 0 0 var(--space-md) 0;
+      line-height: 1.6;
+    }
+
+    .privacy-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      background: var(--surface-container-low);
+      border: var(--border-soft);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--rounded-full);
+    }
+
+    .hero-sketch-frame {
+      background: var(--surface-paper);
+      border: 1.5px solid var(--outline-variant);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-sketch);
+      position: relative;
+      text-align: center;
+    }
+
+    .tape-label {
+      display: inline-block;
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.75rem;
+      border-radius: 4px;
+      transform: rotate(-1.5deg);
+      margin-bottom: var(--space-sm);
+      border: 1px dashed var(--tertiary);
+    }
+
+    .sketch-caption {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      margin: var(--space-sm) 0 0 0;
+    }
+
+    /* Canopy 6-Step Guide Strip */
+    .step-strip-wrap {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      border: var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .step-strip-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .step-strip-title {
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .step-nav-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .step-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-height: 44px;
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--rounded);
+      border: 1px solid transparent;
+      background: var(--surface-paper);
+      color: var(--on-surface-variant);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out),
+                  transform var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .step-chip:hover {
+      background: var(--surface-container);
+      color: var(--on-surface);
+      transform: translateY(-1px);
+    }
+
+    .step-chip.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+      font-weight: 700;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      opacity: 0.85;
+    }
+
+    /* Section Headings */
+    .section-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+      padding-top: var(--space-sm);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      border-bottom: 1.5px solid var(--outline-variant);
+      padding-bottom: var(--space-sm);
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--tertiary);
+      display: block;
+      margin-bottom: var(--space-xs);
+    }
+
+    h2 {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 700;
+      line-height: 1.25;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .section-subtitle {
+      color: var(--on-surface-variant);
+      margin: var(--space-xs) 0 0 0;
+      max-width: 64ch;
+      font-size: 0.95rem;
+    }
+
+    /* Cards & Canopy Highlight */
+    .card {
+      background: var(--surface-paper);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      border: var(--border-soft);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card-loam {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      border: var(--border-soft);
+    }
+
+    .card.is-leaf-highlight {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border: 1.5px dashed var(--primary);
+      box-shadow: var(--shadow-sketch);
+    }
+
+    /* Module 1: Affirmation Grid */
+    .affirmation-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.95fr);
+      gap: var(--space-lg);
+      align-items: stretch;
+    }
+
+    .quote-ribbon {
+      background: var(--surface-paper);
+      border-left: 4px solid var(--primary);
+      padding: var(--space-md) var(--space-lg);
+      border-radius: 0 var(--rounded) var(--rounded) 0;
+      margin: var(--space-md) 0;
+      font-family: var(--font-headline);
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .compact-bullets {
+      list-style: none;
+      padding: 0;
+      margin: var(--space-md) 0 0 0;
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .compact-bullets li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      font-size: 0.95rem;
+    }
+
+    .bullet-dot {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: var(--rounded-full);
+      background: var(--primary);
+      color: var(--on-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .metrics-stack {
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .metric-note-card {
+      background: var(--surface-paper);
+      border: var(--border-soft);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .metric-val {
+      font-family: var(--font-headline);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .metric-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--on-surface);
+    }
+
+    .metric-sub {
+      font-size: 0.82rem;
+      color: var(--on-surface-variant);
+      margin-top: 2px;
+    }
+
+    /* Filter Bar (Directly adjacent to content) */
+    .filter-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      background: var(--surface-container-low);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded-lg);
+      border: var(--border-soft);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .filter-group-label {
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      margin-right: var(--space-xs);
+    }
+
+    .filter-btn {
+      min-height: 44px;
+      padding: 0.45rem 0.95rem;
+      border-radius: var(--rounded-full);
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-paper);
+      color: var(--on-surface-variant);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .filter-btn:hover {
+      background: var(--surface-container);
+      color: var(--on-surface);
+    }
+
+    .filter-btn.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+      font-weight: 700;
+      box-shadow: var(--shadow-soft);
+    }
+
+    /* Module 2: Interactive Timeline Walkthrough */
+    .timeline-workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.35fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .timeline-rail {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      position: relative;
+      padding-left: var(--space-md);
+    }
+
+    .timeline-rail::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 18px;
+      bottom: 18px;
+      width: 2px;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--outline-sketch) 0,
+        var(--outline-sketch) 6px,
+        transparent 6px,
+        transparent 12px
+      );
+    }
+
+    .timeline-node-btn {
+      position: relative;
+      width: 100%;
+      text-align: left;
+      background: var(--surface-paper);
+      border: var(--border-soft);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      min-height: 54px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  transform var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .timeline-node-btn::before {
+      content: '';
+      position: absolute;
+      left: calc(-1 * var(--space-md) + 1px);
+      top: 20px;
+      width: 12px;
+      height: 12px;
+      border-radius: var(--rounded-full);
+      background: var(--surface-paper);
+      border: 2.5px solid var(--primary);
+    }
+
+    .timeline-node-btn:hover {
+      background: var(--surface-container-low);
+      transform: translateX(2px);
+    }
+
+    .timeline-node-btn.is-selected {
+      background: var(--surface-container-low);
+      box-shadow: var(--shadow-sketch);
+      outline: 2px solid var(--primary);
+    }
+
+    .timeline-node-btn.is-selected::before {
+      background: var(--primary);
+      box-shadow: 0 0 0 3px var(--chart-sage);
+    }
+
+    .node-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+
+    .node-date {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .aha-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+      padding: 0.1rem 0.5rem;
+      border-radius: var(--rounded-full);
+    }
+
+    .node-short-title {
+      font-weight: 700;
+      font-size: 0.94rem;
+      color: var(--on-surface);
+    }
+
+    /* Timeline Detail Comic Card */
+    .timeline-detail-card {
+      background: var(--surface-paper);
+      border: 1.5px solid var(--outline-variant);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-sketch);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .stepper-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      padding-bottom: var(--space-sm);
+      border-bottom: var(--border-sketch);
+    }
+
+    .step-counter {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--secondary);
+      background: var(--surface-container-low);
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--rounded);
+    }
+
+    .stepper-controls {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .btn-secondary {
+      min-height: 44px;
+      padding: 0.45rem 0.95rem;
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container);
+      color: var(--on-surface);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--surface-container-high);
+    }
+
+    .btn-secondary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      min-height: 44px;
+      padding: 0.5rem 1.1rem;
+      border-radius: var(--rounded);
+      border: 0;
+      background: var(--primary);
+      color: var(--on-primary);
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: opacity var(--dur-micro) var(--ease-out),
+                  transform var(--dur-micro) var(--ease-out);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .epistemic-row {
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .fact-box {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      border-left: 3.5px solid var(--primary);
+    }
+
+    .hypothesis-box {
+      background: var(--background);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      border: 1.5px dashed var(--outline-sketch);
+    }
+
+    .tag-epistemic {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 4px;
+      margin-bottom: var(--space-xs);
+    }
+
+    .tag-fact {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .tag-hyp {
+      background: var(--chart-sage);
+      color: var(--on-chart-sage);
+    }
+
+    .aha-callout {
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      border: 1.5px dashed var(--tertiary);
+      display: flex;
+      gap: var(--space-sm);
+      align-items: flex-start;
+    }
+
+    .aha-callout-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 2px;
+    }
+
+    /* Native Collapsible Details */
+    details.note-fold {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded);
+      border: var(--border-soft);
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    details.note-fold summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--primary);
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+    }
+
+    details.note-fold summary::-webkit-details-marker { display: none; }
+
+    details.note-fold[open] summary {
+      margin-bottom: var(--space-sm);
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px dashed var(--outline-variant);
+    }
+
+    .fold-body {
+      font-size: 0.9rem;
+      color: var(--on-surface-variant);
+    }
+
+    /* Module 3: Issue Board */
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(310px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+
+    .issue-card {
+      background: var(--surface-paper);
+      border: var(--border-soft);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      container-type: inline-size;
+    }
+
+    .issue-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding-bottom: var(--space-sm);
+      border-bottom: var(--border-sketch);
+    }
+
+    .issue-title {
+      font-family: var(--font-headline);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .stage-pill {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--rounded-full);
+      background: var(--chart-sage);
+      color: var(--on-chart-sage);
+      white-space: nowrap;
+    }
+
+    .triad-step {
+      display: grid;
+      gap: 4px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      background: var(--background);
+    }
+
+    .triad-step.is-new {
+      background: var(--surface-container-low);
+      border-left: 3.5px solid var(--primary);
+    }
+
+    .triad-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .triad-step.is-new .triad-label {
+      color: var(--primary);
+    }
+
+    /* Scrollable Wide Table */
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: var(--rounded-lg);
+      border: var(--border-soft);
+      background: var(--surface-paper);
+      box-shadow: var(--shadow-soft);
+    }
+
+    table.progress-table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    table.progress-table th {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-weight: 700;
+      padding: var(--space-md);
+      border-bottom: 1.5px solid var(--outline-variant);
+    }
+
+    table.progress-table td {
+      padding: var(--space-md);
+      vertical-align: top;
+      border-bottom: 1px solid var(--outline-variant);
+      color: var(--on-surface-variant);
+    }
+
+    table.progress-table tr:last-child td { border-bottom: 0; }
+
+    /* Module 4: Inner Resources & Chart */
+    .resources-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .strengths-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .strength-tile {
+      background: var(--surface-paper);
+      border: var(--border-soft);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .strength-title {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.98rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .shift-card-list {
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .shift-card {
+      background: var(--surface-paper);
+      border: 1.5px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .shift-toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .shift-pill {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 0.15rem 0.6rem;
+      border-radius: var(--rounded-full);
+    }
+
+    .shift-pill.is-old {
+      background: var(--surface-container);
+      color: var(--on-surface-variant);
+    }
+
+    .shift-pill.is-new {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .chart-card {
+      background: var(--surface-paper);
+      border: var(--border-soft);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .chart-box {
+      position: relative;
+      width: 100%;
+      min-height: 290px;
+    }
+
+    .chart-caption {
+      font-size: 0.82rem;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    /* Module 5: Pocket Toolkit */
+    .toolkit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(310px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+
+    .tool-card {
+      background: var(--surface-paper);
+      border: 1.5px solid var(--outline-variant);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-sketch);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .tool-icon-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px dashed var(--primary);
+    }
+
+    .tool-formula {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--on-primary-container);
+    }
+
+    .dialogue-sim {
+      background: var(--background);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      border: var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .sim-switch {
+      display: flex;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+
+    .sim-tab {
+      min-height: 40px;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-paper);
+      color: var(--on-surface-variant);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .sim-tab.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    .speech-bubble {
+      background: var(--surface-paper);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      border-left: 3.5px solid var(--primary);
+      font-size: 0.92rem;
+    }
+
+    .speech-bubble.is-trap {
+      border-left-color: var(--tertiary);
+    }
+
+    .check-list {
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: 0.45rem 0.6rem;
+      border-radius: var(--rounded);
+      cursor: pointer;
+      min-height: 44px;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .check-item:hover {
+      background: var(--surface-container-low);
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .note-draw-box {
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      border: 1.5px dashed var(--tertiary);
+      min-height: 92px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-xs);
+    }
+
+    /* Module 6: Next Steps & Personal Memo */
+    .next-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .next-card {
+      background: var(--surface-paper);
+      border: var(--border-soft);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      transition: box-shadow var(--dur-short) var(--ease-out);
+    }
+
+    .next-card.is-pinned {
+      background: var(--surface-container-low);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sketch);
+    }
+
+    .memo-panel {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-lg);
+      border: var(--border-sketch);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .memo-form-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .memo-label {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--on-surface);
+    }
+
+    .memo-textarea {
+      width: 100%;
+      min-height: 84px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline);
+      background: var(--surface-paper);
+      color: var(--on-surface);
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .memo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .status-text {
+      font-size: 0.84rem;
+      color: var(--positive);
+      font-weight: 600;
+    }
+
+    .source-footer {
+      border-top: var(--border-sketch);
+      padding-top: var(--space-lg);
+      padding-bottom: var(--space-xl);
+      color: var(--on-surface-variant);
+      font-size: 0.85rem;
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .is-hidden { display: none !important; }
+
+    /* Reveal animation */
+    .reveal-item {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity var(--dur-long) var(--ease-out),
+                  transform var(--dur-long) var(--ease-out);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 860px) {
+      .hero-header,
+      .affirmation-grid,
+      .timeline-workspace,
+      .resources-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-md);
+        gap: var(--space-lg);
+      }
+      .card, .card-loam, .tool-card, .issue-card, .timeline-detail-card {
+        padding: var(--space-md);
+      }
+      .step-nav-list {
+        gap: var(--space-xs);
+      }
+      .step-chip {
+        flex: 1 1 calc(50% - var(--space-xs));
+        justify-content: flex-start;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="notebook-canvas">
+  <div class="page-grid">
+
+    <!-- HERO HEADER -->
+    <header class="hero-header">
+      <div>
+        <span class="kicker">阶段性心理成长复盘 · 2026年8月 — 11月</span>
+        <h1>在碰撞与温柔里，看见更笃定的自己</h1>
+        <p class="hero-lede">
+          这是一份属于你的森林手绘成长笔记。不贴标签、不做评判，只把这 12 次对话里的觉察、转折与微小练习整理成册，陪你继续往更踏实的方向生长。
+        </p>
+        <div class="privacy-badge-row">
+          <span class="meta-pill">
+            <i data-lucide="shield-check" aria-hidden="true" style="width:16px;height:16px;color:var(--primary)"></i>
+            已严格隐去姓名、院校、城市等个人敏感隐私
+          </span>
+          <span class="meta-pill">
+            <i data-lucide="book-open" aria-hidden="true" style="width:16px;height:16px;color:var(--primary)"></i>
+            全部内容源自真实会谈记录，标注日期并区分事实与推演
+          </span>
+        </div>
+      </div>
+
+      <!-- Hand-drawn botanical notebook SVG -->
+      <div class="hero-sketch-frame">
+        <span class="tape-label">成长手账 · 第1阶段小结</span>
+        <svg viewBox="0 0 280 175" width="100%" style="max-width:260px;height:auto;display:block;margin:0 auto;" aria-hidden="true">
+          <!-- Soft sun halo -->
+          <circle cx="215" cy="42" r="24" fill="var(--tertiary-container)" opacity="0.85" />
+          <path d="M215 10 V18 M245 42 H253 M177 42 H185 M236 21 L242 15 M188 21 L194 27" stroke="var(--tertiary)" stroke-width="2" stroke-linecap="round" />
+          <!-- Open sketch notebook -->
+          <path d="M36 122 C36 114 42 110 50 110 H136 C138 110 140 112 140 115 V152 C140 152 98 147 40 154 C37 154 36 151 36 148 Z" fill="var(--surface-container-low)" stroke="var(--on-surface)" stroke-width="2" stroke-linejoin="round" />
+          <path d="M244 122 C244 114 238 110 230 110 H144 C142 110 140 112 140 115 V152 C140 152 182 147 240 154 C243 154 244 151 244 148 Z" fill="var(--surface-paper)" stroke="var(--on-surface)" stroke-width="2" stroke-linejoin="round" />
+          <!-- Notebook lines -->
+          <path d="M54 124 H122 M54 134 H110 M158 124 H224 M158 134 H210" stroke="var(--outline-sketch)" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="4 3" />
+          <!-- Growing forest sprout out of the center spine -->
+          <path d="M140 114 C140 86 140 62 140 42" stroke="var(--primary)" stroke-width="3.2" stroke-linecap="round" />
+          <!-- Left leaves -->
+          <path d="M140 86 C118 82 104 66 108 52 C122 50 138 64 140 86 Z" fill="var(--chart-sage)" stroke="var(--on-surface)" stroke-width="2" stroke-linejoin="round" />
+          <path d="M140 86 C126 74 118 64 113 57" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round" />
+          <!-- Right leaves -->
+          <path d="M140 72 C164 68 178 52 174 36 C158 36 142 50 140 72 Z" fill="var(--primary)" stroke="var(--on-surface)" stroke-width="2" stroke-linejoin="round" />
+          <path d="M140 72 C154 60 163 50 168 42" stroke="var(--surface-container-low)" stroke-width="1.5" stroke-linecap="round" />
+          <!-- Top bud -->
+          <path d="M140 42 C132 30 136 18 142 16 C148 18 150 30 140 42 Z" fill="var(--tertiary-container)" stroke="var(--on-surface)" stroke-width="1.8" />
+        </svg>
+        <p class="sketch-caption">“先照顾好自己的根系，才能长久地给予他人荫蔽。”</p>
+      </div>
+    </header>
+
+    <!-- CANOPY STEP-BY-STEP GUIDE STRIP -->
+    <nav class="step-strip-wrap" aria-label="阶段复盘分步导览">
+      <div class="step-strip-top">
+        <span class="step-strip-title">
+          <i data-lucide="compass" aria-hidden="true" style="width:16px;height:16px"></i>
+          分步浏览指南（点击直达对应模块）
+        </span>
+        <span style="font-size:0.8rem;color:var(--on-surface-variant);">覆盖 2026-08-01 至 2026-11-13 会谈记录</span>
+      </div>
+      <div class="step-nav-list" id="guide-nav">
+        <button type="button" class="step-chip is-active" onclick="jumpToSection('sec-affirmation', this)">
+          <span class="step-num">01</span> 成长寄语
+        </button>
+        <button type="button" class="step-chip" onclick="jumpToSection('sec-timeline', this)">
+          <span class="step-num">02</span> 咨询时间轴
+        </button>
+        <button type="button" class="step-chip" onclick="jumpToSection('sec-board', this)">
+          <span class="step-num">03</span> 议题进展看板
+        </button>
+        <button type="button" class="step-chip" onclick="jumpToSection('sec-resources', this)">
+          <span class="step-num">04</span> 内在资源库
+        </button>
+        <button type="button" class="step-chip" onclick="jumpToSection('sec-toolkit', this)">
+          <span class="step-num">05</span> 随身工具箱
+        </button>
+        <button type="button" class="step-chip" onclick="jumpToSection('sec-next', this)">
+          <span class="step-num">06</span> 下一步展望
+        </button>
+      </div>
+    </nav>
+
+    <!-- MODULE 1: AFFIRMATION -->
+    <section id="sec-affirmation" class="section-block">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">STEP 01 · OPENING AFFIRMATION</span>
+          <h2>成长寄语：从“替家人而来”，到“真正看见自己”</h2>
+        </div>
+      </div>
+
+      <div class="affirmation-grid">
+        <article class="card is-leaf-highlight">
+          <span class="tape-label">写给你的开篇肯定</span>
+          <p style="margin:0 0 var(--space-sm) 0;font-weight:600;font-size:1.05rem;">
+            这三个半月里，你完成了一件比想象中更有勇气的转向：
+          </p>
+          <div class="quote-ribbon">
+            最初你带着“80%想帮爸爸”的责任感走进咨询，认为自己“没啥烦恼、搞得定一切”；而现在，你敢于承认关系里的疲惫、独处时对离世亲人的思念，以及习惯性当“好好先生”背后的委屈。
+          </div>
+          <ul class="compact-bullets">
+            <li>
+              <span class="bullet-dot">1</span>
+              <span><strong>去标签化视角：</strong>你本就具备稳固的学业执行力与真诚的重情特质，过程中的波动不是“出了问题”，而是亲密关系与成长过渡期的真实摩擦信号。</span>
+            </li>
+            <li>
+              <span class="bullet-dot">2</span>
+              <span><strong>守住核心航向：</strong>即便在情感拉扯最消耗的几周，你依然分得清“小事可商量，大事不妥协”，稳稳托住了学业与未来规划。</span>
+            </li>
+            <li>
+              <span class="bullet-dot">3</span>
+              <span><strong>停止嘴硬，开始松动：</strong>从早期防卫自证到后期坦诚检视自身时间分配与盲区，你正在把“忍耐的硬壳”换成“有弹性、有边界的真我”。</span>
+            </li>
+          </ul>
+        </article>
+
+        <div class="metrics-stack">
+          <div class="metric-note-card">
+            <div>
+              <div class="metric-label">累计深度对话</div>
+              <div class="metric-sub">2026-08-01 至 2026-11-13（含第1、5、9次三方阶段回顾）</div>
+            </div>
+            <div class="metric-val">12 次</div>
+          </div>
+          <div class="metric-note-card">
+            <div>
+              <div class="metric-label">主业 / 学业稳健度</div>
+              <div class="metric-sub">11-13 会谈自评；GPA 曾由 3.2 跃升至 3.9（08-01）</div>
+            </div>
+            <div class="metric-val">9 / 10 分</div>
+          </div>
+          <div class="metric-note-card">
+            <div>
+              <div class="metric-label">突破时刻 (Aha!)</div>
+              <div class="metric-sub">从“烧开水式隐忍”到“陈述句沟通＋空间破局”</div>
+            </div>
+            <div class="metric-val">5 个节点</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE 2: INTERACTIVE TIMELINE -->
+    <section id="sec-timeline" class="section-block">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">STEP 02 · CONSULTATION TIMELINE & AHA MOMENTS</span>
+          <h2>咨询时间轴：分步重温关键转折与突破时刻</h2>
+          <p class="section-subtitle">按时间顺序合并整理（同阶段双次记录已标注合并）。点击任意主题筛选，或使用“上一步 / 下一步”逐页翻看手记。</p>
+        </div>
+      </div>
+
+      <!-- Filter controls adjacent to timeline -->
+      <div class="filter-toolbar" role="region" aria-label="时间轴筛选控件">
+        <div class="filter-group">
+          <span class="filter-group-label">按议题筛选：</span>
+          <button type="button" class="filter-btn is-active" onclick="filterTimeline('all', this)">全部阶段 (8)</button>
+          <button type="button" class="filter-btn" onclick="filterTimeline('self', this)">自我与情绪</button>
+          <button type="button" class="filter-btn" onclick="filterTimeline('relationship', this)">亲密关系</button>
+          <button type="button" class="filter-btn" onclick="filterTimeline('family', this)">家庭与哀伤</button>
+          <button type="button" class="filter-btn" onclick="filterTimeline('aha', this)">只看突破时刻 (Aha!)</button>
+        </div>
+      </div>
+
+      <div class="timeline-workspace">
+        <!-- Left rail -->
+        <div class="timeline-rail" id="timeline-rail" aria-label="会谈节点列表"></div>
+
+        <!-- Right detail card -->
+        <article class="timeline-detail-card" id="timeline-detail" aria-live="polite"></article>
+      </div>
+    </section>
+
+    <!-- MODULE 3: ISSUE PROGRESS BOARD -->
+    <section id="sec-board" class="section-block">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">STEP 03 · ISSUE PROGRESS BOARD</span>
+          <h2>议题进展看板：困扰、进展与新应对模式</h2>
+          <p class="section-subtitle">聚焦核心成长议题，支持按议题聚焦或切换为横向对比宽表。</p>
+        </div>
+      </div>
+
+      <div class="filter-toolbar" role="region" aria-label="议题看板筛选与视图切换">
+        <div class="filter-group">
+          <span class="filter-group-label">议题过滤：</span>
+          <button type="button" class="filter-btn is-active" onclick="filterBoard('all', this)">全部议题 (3)</button>
+          <button type="button" class="filter-btn" onclick="filterBoard('intimacy', this)">① 亲密关系边界</button>
+          <button type="button" class="filter-btn" onclick="filterBoard('emotion', this)">② 情绪与“好好先生”</button>
+          <button type="button" class="filter-btn" onclick="filterBoard('family', this)">③ 家庭角色与哀伤</button>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">显示模式：</span>
+          <button type="button" class="filter-btn is-active" id="btn-view-cards" onclick="setBoardView('cards')">手记卡片</button>
+          <button type="button" class="filter-btn" id="btn-view-table" onclick="setBoardView('table')">横向对比表</button>
+        </div>
+      </div>
+
+      <!-- Cards View -->
+      <div class="board-grid" id="board-cards-view">
+        <!-- Issue 1 -->
+        <article class="issue-card" data-topic="intimacy">
+          <div class="issue-head">
+            <div>
+              <h3 class="issue-title">① 亲密关系中的磨合与边界</h3>
+              <span style="font-size:0.8rem;color:var(--on-surface-variant);">来源：08-01, 09-03, 10-01, 10-08, 10-16, 10-22, 11-13</span>
+            </div>
+            <span class="stage-pill">持续调试中</span>
+          </div>
+          <div class="triad-step">
+            <span class="triad-label">最初困扰</span>
+            <span>高频相处后摩擦感由早期约 10%–15% 升至约 30%；易因生活细节陷入“讲道理自证”或“无条件认怂”的疲惫循环（事实记录）。</span>
+          </div>
+          <div class="triad-step">
+            <span class="triad-label">当前进展</span>
+            <span>看清指责背后常隐藏对关注与安全感的渴望（模式推演）；11-13 自评虽因正视摩擦降至 5–6 分，但已停止“嘴硬防御”，开始诚实检视自身陪伴时间分配。</span>
+          </div>
+          <div class="triad-step is-new">
+            <span class="triad-label">新应对模式</span>
+            <span><strong>小事柔化、大事守线：</strong>用外出散步打破密闭低气压、微调娱乐时长并肯定对方付出；同时守住基本睡眠需求与赴日深造等人生主线，不靠“装孙子式顺从”换和平。</span>
+          </div>
+        </article>
+
+        <!-- Issue 2 -->
+        <article class="issue-card" data-topic="emotion">
+          <div class="issue-head">
+            <div>
+              <h3 class="issue-title">② 情绪管理与“好好先生”机制</h3>
+              <span style="font-size:0.8rem;color:var(--on-surface-variant);">来源：09-10, 09-18, 09-24, 10-16</span>
+            </div>
+            <span class="stage-pill">核心觉察期</span>
+          </div>
+          <div class="triad-step">
+            <span class="triad-label">最初困扰</span>
+            <span>习惯 90% 时间自我忍耐，害怕沟通成本过高引发争执，像“压紧盖子的烧水壶”直至临界爆发；伴随重要展示前紧张躯体反应及反复核查学分/作业系统 6–7 次的确认焦虑（事实记录）。</span>
+          </div>
+          <div class="triad-step">
+            <span class="triad-label">当前进展</span>
+            <span>回溯到童年“通过懂事乖巧赢取关注”的早期印记，识破脑海中“你很委屈吗”的严苛内耗声；理解愤怒其实是保护个人规则与边界的力量（模式推演）。</span>
+          </div>
+          <div class="triad-step is-new">
+            <span class="triad-label">新应对模式</span>
+            <span><strong>水温初升时温和发声：</strong>练习“表达情绪而非情绪化表达”，允许自己拥有合理休息与被体谅的需求，把“善解人意”变为主动选择而非自我枷锁。</span>
+          </div>
+        </article>
+
+        <!-- Issue 3 -->
+        <article class="issue-card" data-topic="family">
+          <div class="issue-head">
+            <div>
+              <h3 class="issue-title">③ 家庭情绪承接与延迟性哀伤</h3>
+              <span style="font-size:0.8rem;color:var(--on-surface-variant);">来源：08-01, 08-07, 09-18, 10-01</span>
+            </div>
+            <span class="stage-pill">稳步转化</span>
+          </div>
+          <div class="triad-step">
+            <span class="triad-label">最初困扰</span>
+            <span>作为家庭“情绪粘合剂”高频承接长辈情绪倾诉，最初以帮助父亲缓解焦虑为主要来意；面对奶奶病重与离世时强撑克制，未充分道别（事实记录）。</span>
+          </div>
+          <div class="triad-step">
+            <span class="triad-label">当前进展</span>
+            <span>在10月初允许自己在独处与委屈时刻释放对奶奶的延迟性思念与“常觉亏欠”之感；同时明确区分他人课题，不被家庭所有成员的情绪过度捆绑。</span>
+          </div>
+          <div class="triad-step is-new">
+            <span class="triad-label">新应对模式</span>
+            <span><strong>将思念化为温柔行动：</strong>坚持每天主动给爷爷发消息陪伴，让亲情延续在日常细节里；继续做家人温暖的倾听者，但不再替所有人扛下人生功课。</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- Scrollable Wide Table View (hidden by default) -->
+      <div class="table-scroll is-hidden" id="board-table-view">
+        <table class="progress-table">
+          <thead>
+            <tr>
+              <th style="width:18%;">核心议题</th>
+              <th style="width:26%;">最初困扰（记录基线）</th>
+              <th style="width:28%;">当前进展（事实与推演）</th>
+              <th style="width:28%;">新应对模式（行动转向）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-topic="intimacy">
+              <td><strong>① 亲密关系磨合与边界</strong><br><span style="font-size:0.78rem;color:var(--secondary);">08-01 ~ 11-13</span></td>
+              <td>摩擦感升至约 30%；在“自证讲道理”与“委屈认怂”间消耗。</td>
+              <td>识别对方防御背后的不安全感（推演）；从嘴硬转为坦诚反思陪伴分配（11-13）。</td>
+              <td>空间转换减压；守住睡眠与深造底线；用陈述句替代顺从与对抗。</td>
+            </tr>
+            <tr data-topic="emotion">
+              <td><strong>② 情绪调节与“好好先生”</strong><br><span style="font-size:0.78rem;color:var(--secondary);">09-10 ~ 10-16</span></td>
+              <td>90%时间压抑隐忍，水壶式临界爆发；重要任务前紧张与反复核查。</td>
+              <td>觉察童年懂事印记与内心苛责声；理解愤怒是维护边界的正常信号。</td>
+              <td>水温初升时温和陈述感受；允许自己有合理需求与休息边界。</td>
+            </tr>
+            <tr data-topic="family">
+              <td><strong>③ 家庭承接与延迟哀伤</strong><br><span style="font-size:0.78rem;color:var(--secondary);">08-01 ~ 10-01</span></td>
+              <td>承担家庭情绪出口；至亲离世初期强撑克制，后出现延迟性落泪与亏欠感。</td>
+              <td>正视并释放真实哀伤；意识到不必替家人承担全部课题。</td>
+              <td>每天主动发消息陪伴爷爷；保留共情温度同时守住能量边界。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MODULE 4: INNER RESOURCES & TRAJECTORY CHART -->
+    <section id="sec-resources" class="section-block">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">STEP 04 · INNER RESOURCES & MINDSET SHIFTS</span>
+          <h2>内在资源库：你的底气与正在发生的思维松动</h2>
+          <p class="section-subtitle">成长不是把自己改造成另一个人，而是认出原本就有的力量，松开不再合身的旧脚本。</p>
+        </div>
+      </div>
+
+      <div class="resources-layout">
+        <!-- Left: 4 Strengths + 3 Mindset Shifts -->
+        <div style="display:grid;gap:var(--space-lg);">
+          <div>
+            <h3 style="font-family:var(--font-headline);margin:0 0 var(--space-sm) 0;font-size:1.15rem;">已觉察的 4 项个人优势</h3>
+            <div class="strengths-grid">
+              <div class="strength-tile">
+                <div class="strength-title">
+                  <i data-lucide="anchor" aria-hidden="true" style="width:18px;height:18px"></i>
+                  稳健的学业与目标定力
+                </div>
+                <p style="margin:0;font-size:0.88rem;color:var(--on-surface-variant);">
+                  热爱能落地为实习与升学路线；在情绪波动期主业仍保持 9/10 分，必要时可迅速切换专注（08-01, 11-13）。
+                </p>
+              </div>
+              <div class="strength-tile">
+                <div class="strength-title">
+                  <i data-lucide="heart-handshake" aria-hidden="true" style="width:18px;height:18px"></i>
+                  高共情与亲情承接力
+                </div>
+                <p style="margin:0;font-size:0.88rem;color:var(--on-surface-variant);">
+                  天然敏锐捕捉家人感受，能在关键家庭时刻稳住局势、陪伴长辈（08-01, 10-01）。
+                </p>
+              </div>
+              <div class="strength-tile">
+                <div class="strength-title">
+                  <i data-lucide="shield" aria-hidden="true" style="width:18px;height:18px"></i>
+                  关键原则下的清晰底气
+                </div>
+                <p style="margin:0;font-size:0.88rem;color:var(--on-surface-variant);">
+                  面对外部不公或人生大方向（如赴日深造规划）有主见、不随波逐流（08-07, 10-01）。
+                </p>
+              </div>
+              <div class="strength-tile">
+                <div class="strength-title">
+                  <i data-lucide="sparkles" aria-hidden="true" style="width:18px;height:18px"></i>
+                  停止嘴硬的自省勇气
+                </div>
+                <p style="margin:0;font-size:0.88rem;color:var(--on-surface-variant);">
+                  愿意在复盘中放下防卫，坦然承认“我可能也有需要调整的地方”（11-13）。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="font-family:var(--font-headline);margin:0 0 var(--space-sm) 0;font-size:1.15rem;">3 次核心思维转变（点击切换对照）</h3>
+            <div class="shift-card-list" id="shift-cards">
+              <div class="shift-card">
+                <div class="shift-toggle-row">
+                  <span class="shift-pill is-new" id="shift-badge-0">新视角 · 09-03 / 09-24</span>
+                  <button type="button" class="btn-secondary" style="min-height:38px;padding:0.25rem 0.75rem;font-size:0.8rem;" onclick="toggleShift(0, this)">对比旧脚本</button>
+                </div>
+                <div id="shift-text-0" style="font-weight:600;color:var(--on-surface);">
+                  “磨合不是抹平棱角，而是接受差异存在；先用陈述句稳住情感连接，再处理具体问题。”
+                </div>
+              </div>
+
+              <div class="shift-card">
+                <div class="shift-toggle-row">
+                  <span class="shift-pill is-new" id="shift-badge-1">新视角 · 09-10</span>
+                  <button type="button" class="btn-secondary" style="min-height:38px;padding:0.25rem 0.75rem;font-size:0.8rem;" onclick="toggleShift(1, this)">对比旧脚本</button>
+                </div>
+                <div id="shift-text-1" style="font-weight:600;color:var(--on-surface);">
+                  “只有真正强大的人才弯得下腰——深知自己的高度在哪里，才敢在僵持时先伸出一只手。”
+                </div>
+              </div>
+
+              <div class="shift-card">
+                <div class="shift-toggle-row">
+                  <span class="shift-pill is-new" id="shift-badge-2">新视角 · 09-10 / 10-01</span>
+                  <button type="button" class="btn-secondary" style="min-height:38px;padding:0.25rem 0.75rem;font-size:0.8rem;" onclick="toggleShift(2, this)">对比旧脚本</button>
+                </div>
+                <div id="shift-text-2" style="font-weight:600;color:var(--on-surface);">
+                  “善解人意是我的选择与力量，而不是讨好他人、不断委屈自己的枷锁。”
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Grounded Chart -->
+        <aside class="chart-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:var(--space-sm);flex-wrap:wrap;">
+            <h3 style="font-family:var(--font-headline);margin:0;font-size:1.12rem;">会谈中记录的主观指标对比</h3>
+            <span class="aha-pill">仅呈现原文出现数据</span>
+          </div>
+          <p class="chart-caption">
+            数据严格取自会谈口头自评，不插值补齐未测量日期。可见<strong>主业稳健度始终托底</strong>，而<strong>情感评分的回落恰恰同步于“从粉饰平和转向直面磨合”</strong>。
+          </p>
+          <div class="chart-box">
+            <canvas id="growthChart" aria-label="会谈主观自评指标对比柱状图" role="img"></canvas>
+          </div>
+          <details class="note-fold">
+            <summary>
+              <span>查看各项数值的会谈出处</span>
+              <i data-lucide="chevron-down" aria-hidden="true" style="width:16px;height:16px"></i>
+            </summary>
+            <div class="fold-body">
+              <ul style="margin:0;padding-left:1.1rem;display:grid;gap:4px;">
+                <li><strong>学业 GPA 跃升（08-01 第1次）：</strong>由上学期 3.2 提升至 3.9（折合百分位/自评稳健支撑）。</li>
+                <li><strong>亲密关系正向占比（08-01 → 09-03/10-16）：</strong>远距阶段自评约 90% 正向（10%摩擦）→ 高频同居后约 70% 正向（30%情绪消耗）。</li>
+                <li><strong>阶段自评打分（11-13 第11次）：</strong>主业满意度 9/10 分；情感关系体验由前阶段约 7.5 分调整为 5.5 分（取 5–6 分中值展示），反映开始诚实面对盲区。</li>
+              </ul>
+            </div>
+          </details>
+        </aside>
+      </div>
+    </section>
+
+    <!-- MODULE 5: POCKET TOOLKIT -->
+    <section id="sec-toolkit" class="section-block">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">STEP 05 · POCKET TOOLKIT</span>
+          <h2>随身工具箱：3 个可立刻上手的日常技术</h2>
+          <p class="section-subtitle">把会谈中打磨出的方法浓缩成三张随身卡片，在情绪升温前拿出来照着练。</p>
+        </div>
+      </div>
+
+      <div class="toolkit-grid">
+        <!-- Tool 1: Spotlight Shift -->
+        <article class="tool-card">
+          <div class="tool-header">
+            <div class="tool-icon-badge" aria-hidden="true">
+              <i data-lucide="flashlight" style="width:22px;height:22px"></i>
+            </div>
+            <div>
+              <h3 style="margin:0;font-family:var(--font-headline);font-size:1.12rem;">技术一：「聚光灯转移」陈述句法</h3>
+              <span style="font-size:0.8rem;color:var(--on-surface-variant);">适用：被指责“不重视对方”、快要急着辩解时</span>
+            </div>
+          </div>
+          <div class="tool-formula">口诀：停自证 → 转聚光灯 → 陈述感受</div>
+          <p style="margin:0;font-size:0.9rem;color:var(--on-surface-variant);">
+            源自 09-10 & 09-24 会谈：避免“我没有啊”的自证陷阱，先把焦点温柔照回对方的不安，再谈自己的真实感受。
+          </p>
+          <div class="dialogue-sim">
+            <div class="sim-switch">
+              <button type="button" class="sim-tab is-active" id="sim-btn-trap" onclick="setSimMode('trap')">踩坑回应（旧）</button>
+              <button type="button" class="sim-tab" id="sim-btn-new" onclick="setSimMode('new')">陈述句回应（新）</button>
+            </div>
+            <div class="speech-bubble is-trap" id="sim-output">
+              <strong>容易踩坑的回应：</strong>“我没有不重视你啊，这周我还给你买菜做这做那，怎么就变成我的错了？”<br>
+              <span style="font-size:0.82rem;color:var(--on-surface-variant);">→ 触发对方更强防御，陷入争输赢死循环。</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Tool 2: Step Out of 30sqm -->
+        <article class="tool-card">
+          <div class="tool-header">
+            <div class="tool-icon-badge" aria-hidden="true">
+              <i data-lucide="trees" style="width:22px;height:22px"></i>
+            </div>
+            <div>
+              <h3 style="margin:0;font-family:var(--font-headline);font-size:1.12rem;">技术二：「走出30㎡」空间破局与微节奏</h3>
+              <span style="font-size:0.8rem;color:var(--on-surface-variant);">适用：宅家无聊内耗、低气压弥漫时</span>
+            </div>
+          </div>
+          <div class="tool-formula">口诀：察觉憋闷 → 换开放空间 → 微行动传重视</div>
+          <p style="margin:0;font-size:0.9rem;color:var(--on-surface-variant);">
+            源自 09-10 & 10-22 会谈实证：离开狭小室内，用自然环境与可兑现的小节奏消解紧绷（可勾选本周尝试项）：
+          </p>
+          <div class="check-list" id="toolkit-checklist">
+            <label class="check-item">
+              <input type="checkbox" data-check-id="walk" onchange="handleCheckChange()">
+              <span>感到气氛闷时，约出去散步、逛超市或探新店（分散挑刺注意力）</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" data-check-id="timebox" onchange="handleCheckChange()">
+              <span>提前商量好周末游戏与陪伴配比（如尝试 5h 缩减至 2h 并专心陪伴）</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" data-check-id="microcare" onchange="handleCheckChange()">
+              <span>用小行动直接肯定对方用心（如吃光对方做的菜、主动收拾碗筷）</span>
+            </label>
+          </div>
+        </article>
+
+        <!-- Tool 3: Honest & Brave Note Game -->
+        <article class="tool-card">
+          <div class="tool-header">
+            <div class="tool-icon-badge" aria-hidden="true">
+              <i data-lucide="sticky-note" style="width:22px;height:22px"></i>
+            </div>
+            <div>
+              <h3 style="margin:0;font-family:var(--font-headline);font-size:1.12rem;">技术三：「诚实勇敢纸条局」坦白契约</h3>
+              <span style="font-size:0.8rem;color:var(--on-surface-variant);">适用：希望开诚布公聊聊心里话、又怕吵翻时</span>
+            </div>
+          </div>
+          <div class="tool-formula">口诀：赞美铺底 → 抽卡表达 → 纯聆听不反驳</div>
+          <p style="margin:0;font-size:0.9rem;color:var(--on-surface-variant);">
+            源自 10-16 会谈共创：准备 8–10 张纸条（含赞美、感谢、温暖回忆与温和吐槽），用游戏规则保护彼此安全。
+          </p>
+          <div class="note-draw-box" id="note-draw-box">
+            <span style="font-size:0.78rem;font-weight:700;" id="drawn-card-type">纸条示例 · 肯定与感谢卡</span>
+            <span style="font-weight:600;font-size:0.94rem;" id="drawn-card-text">“其实我一直很记得你认真给我做饭、挑衣服的样子，那些细节让我觉得很温暖。”</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:var(--space-sm);flex-wrap:wrap;">
+            <button type="button" class="btn-secondary" onclick="drawNextNoteCard()">
+              <i data-lucide="shuffle" aria-hidden="true" style="width:16px;height:16px"></i>
+              抽取下一张纸条示例
+            </button>
+            <span style="font-size:0.78rem;color:var(--on-surface-variant);">规则：只听不辩，过载可“Pass”</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- MODULE 6: NEXT STEPS & PERSONAL REFLECTION -->
+    <section id="sec-next" class="section-block">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">STEP 06 · LOOKING AHEAD</span>
+          <h2>下一步展望：下一阶段的温和探索方向</h2>
+          <p class="section-subtitle">你可以点选 1–2 个最想在后续会谈中优先继续聊的方向，并写下一句给自己或下周会谈的提醒（支持本地保存）。</p>
+        </div>
+      </div>
+
+      <div class="next-grid" id="next-steps-grid">
+        <div class="next-card" data-next-id="test-time">
+          <div>
+            <span class="aha-pill" style="margin-bottom:var(--space-xs);display:inline-block;">方向 A · 关系实测</span>
+            <h3 style="margin:0 0 var(--space-xs) 0;font-size:1.05rem;">观察“时间边界微调”的真实反馈</h3>
+            <p style="margin:0;font-size:0.88rem;color:var(--on-surface-variant);">
+              测试减少周末游戏时长、增加专注陪伴后，双方磨合的真实弹性，验证“共同协商”而非“单方顺从”的效果（11-13）。
+            </p>
+          </div>
+          <label class="check-item" style="padding-left:0;">
+            <input type="checkbox" data-next-check="test-time" onchange="toggleNextPin('test-time', this)">
+            <span style="font-size:0.86rem;font-weight:600;">设为近期优先关注</span>
+          </label>
+        </div>
+
+        <div class="next-card" data-next-id="early-voice">
+          <div>
+            <span class="aha-pill" style="margin-bottom:var(--space-xs);display:inline-block;">方向 B · 情绪疏导</span>
+            <h3 style="margin:0 0 var(--space-xs) 0;font-size:1.05rem;">练习“水温初升时”表达微小不满</h3>
+            <p style="margin:0;font-size:0.88rem;color:var(--on-surface-variant);">
+              不等到水壶烧开至 90% 临界点，在感到轻微不适或委屈时用柔和陈述句开口，积累低成本沟通经验（09-10, 09-18）。
+            </p>
+          </div>
+          <label class="check-item" style="padding-left:0;">
+            <input type="checkbox" data-next-check="early-voice" onchange="toggleNextPin('early-voice', this)">
+            <span style="font-size:0.86rem;font-weight:600;">设为近期优先关注</span>
+          </label>
+        </div>
+
+        <div class="next-card" data-next-id="double-check">
+          <div>
+            <span class="aha-pill" style="margin-bottom:var(--space-xs);display:inline-block;">方向 C · 焦虑机制</span>
+            <h3 style="margin:0 0 var(--space-xs) 0;font-size:1.05rem;">探索反复核查与重要任务前的焦虑机制</h3>
+            <p style="margin:0;font-size:0.88rem;color:var(--on-surface-variant);">
+              适时梳理公开展示前紧张、反复确认学分与作业提交（6–7次）背后的心理安全需求（09-18 待选议题）。
+            </p>
+          </div>
+          <label class="check-item" style="padding-left:0;">
+            <input type="checkbox" data-next-check="double-check" onchange="toggleNextPin('double-check', this)">
+            <span style="font-size:0.86rem;font-weight:600;">设为近期优先关注</span>
+          </label>
+        </div>
+
+        <div class="next-card" data-next-id="equal-diff">
+          <div>
+            <span class="aha-pill" style="margin-bottom:var(--space-xs);display:inline-block;">方向 D · 独立自我</span>
+            <h3 style="margin:0 0 var(--space-xs) 0;font-size:1.05rem;">守护“平等而不同”与个人长期蓝图</h3>
+            <p style="margin:0;font-size:0.88rem;color:var(--on-surface-variant);">
+              在延续对爷爷等家人温柔联结的同时，不因关系拉扯动摇海外深造与职业兴趣规划，做稳稳扎根的自己（10-01）。
+            </p>
+          </div>
+          <label class="check-item" style="padding-left:0;">
+            <input type="checkbox" data-next-check="equal-diff" onchange="toggleNextPin('equal-diff', this)">
+            <span style="font-size:0.86rem;font-weight:600;">设为近期优先关注</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Personal Memo with Persistent State -->
+      <div class="memo-panel">
+        <div class="memo-form-row">
+          <label for="client-memo-input" class="memo-label">我的阶段手记备忘（下次会谈前想提醒自己的话，或最近的一件小成就）：</label>
+          <textarea id="client-memo-input" class="memo-textarea" placeholder="例如：这周试着在感到憋屈时先深呼吸，用陈述句说了一句真实感受，没有直接冷战…"></textarea>
+        </div>
+        <div class="memo-actions">
+          <div style="display:flex;gap:var(--space-sm);flex-wrap:wrap;align-items:center;">
+            <button type="button" class="btn-primary" onclick="saveMemoNote()">
+              <i data-lucide="bookmark-check" aria-hidden="true" style="width:16px;height:16px"></i>
+              保存我的手记
+            </button>
+            <button type="button" class="btn-secondary" id="btn-reset-state" onclick="resetUserNotes(this)">清空勾选与手记</button>
+          </div>
+          <span class="status-text" id="save-status-msg" aria-live="polite"></span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <api-shim></api-shim>
+
+  <script>
+    // Timeline data (strictly grounded, anonymized, backtick template literals)
+    const TIMELINE_DATA = [
+      {
+        id: `step-1`,
+        date: `2026-08-01`,
+        sessionLabel: `第1次会谈（初评与方向确立）`,
+        topics: [`family`, `self`],
+        isAha: false,
+        shortTitle: `带着“帮爸爸”的初心而来，初次盘点生活基线`,
+        fact: `主述当前生活总体平稳、无明显痛苦，GPA 从 3.2 升至 3.9，对体育/电竞管理与未来赴日读研有清晰规划；自述约 80% 动机是为了理解并帮助焦虑闷郁的父亲，同时正面临至亲病重的现实冲击。`,
+        hypothesis: `表面“一切都搞得定”的从容背后，你习惯性承担了家庭“情绪粘合剂”的角色，并倾向用同源舒适圈来抵御“极度怕孤独”的内在不安。`,
+        aha: ``,
+        detail: `本次会谈确立了非病理化、发展性探索的合作基调与严格保密边界，约定在后续进程中同时关照“家人支持”与“个人成长”。`
+      },
+      {
+        id: `step-2`,
+        date: `2026-08-07`,
+        sessionLabel: `第2次会谈`,
+        topics: [`family`, `self`],
+        isAha: true,
+        shortTitle: `回望成长中的反击力量与对亲近之人的包容`,
+        fact: `梳理了青春期与家人互动的差异：面对压力你能够直接反击表达，而非压抑怯懦；返程高速上主动让父亲掌舵并借聊车互动，尝试用行动帮父亲减压；同时看到自己“0以内（亲近之人）很包容，圈外人不惯着”的边界。`,
+        hypothesis: `你能把内心的愤怒或不满转化为自我保护的底气，这让你在相似的家庭严厉环境下，保住了比兄长更强的自我接纳感。`,
+        aha: `Aha! 觉察到自己天然具备“对内高体谅、对外有界限”的情绪调节底色，也开始用陪伴动作去替代单纯的担忧。`,
+        detail: `同时意识到长辈之间的陈年心结或兄长的状态各有其客观条件与课题，不需全由你一人负责扭转。`
+      },
+      {
+        id: `step-3`,
+        date: `2026-09-03`,
+        sessionLabel: `第3次会谈`,
+        topics: [`relationship`, `self`],
+        isAha: true,
+        shortTitle: `看见亲密摩擦背后的防御，提出“带棱角同行”`,
+        fact: `倾诉伴侣因作息/睡眠细节触发争吵与冷战，自述平时约 70% 时间温暖贴心，但 30% 负面情绪带来明显承接压力；觉察到自己带有讨好与希望身边人开心的倾向，并坦言自己不是对方的专属疗愈者。`,
+        hypothesis: `伴侣外显的指责与挑错，很可能源自她成长中“长期被严苛挑错”而训练出的先发防御——只要先挑别人错，就仿佛不会被批评（待验证推演）。`,
+        aha: `Aha! 触及长久关系的底层心法：“我可以不强行磨平她的棱角，但我能接受问题的存在”；情绪 90% 取决于自己如何看待，而非完全被对方牵着走。`,
+        detail: `开始留意触发冲突的前置信号，为后续把“道理争辩”转化为“情绪理解”埋下伏笔。`
+      },
+      {
+        id: `step-4`,
+        date: `2026-09-10`,
+        sessionLabel: `第4次会谈`,
+        topics: [`self`, `relationship`],
+        isAha: true,
+        shortTitle: `识破“烧开水壶式隐忍”与空间转换破局`,
+        fact: `由日常边界被冒犯事件切入，坦承自己 90% 时间都在当“好好先生”自我忍耐，直到临界点才失控爆发；同时验证了多带伴侣走出狭小室内去散步逛街，“本周基本零矛盾”的显著效果。`,
+        hypothesis: `“好好先生”的隐忍习惯可能连结着童年“靠懂事乖巧赢得关注”的早期印记，脑海中常响起“你很委屈吗”的自我苛责，让你不敢轻易表达小不满。`,
+        aha: `Aha! 真正领悟两把钥匙：①“表达情绪而非情绪化表达”是低成本减压阀；②“只有真正强大的人才敢于先弯腰，因为他知道自己不会因此变矮”。`,
+        detail: `意识到愤怒本身也是维护内在秩序的力量，关键在于水温初升时疏导，而非死死压住壶盖。`
+      },
+      {
+        id: `step-5`,
+        date: `2026-09-18 & 09-24`,
+        sessionLabel: `第5阶段双次会谈（合并：09-18 三方回顾 & 09-24 跟进）`,
+        topics: [`self`, `relationship`, `family`],
+        isAha: true,
+        shortTitle: `跳出“自证陷阱”，看见反复核查焦虑与承接边界`,
+        fact: `09-18 三方回顾确认亲密关系与情绪管理成为核心议题，同时觉察自身在公开演讲前会生理性紧张、以及对学分和作业系统反复核查 6–7 次的确认焦虑；09-24 进一步练习用陈述句回应伴侣。`,
+        hypothesis: `在伴侣指责面前反复说“我没有、不是这样”属于“自证陷阱”；对方的愤怒本质可能是渴望情感连接，而你的多次确认行为则是应对重大事项不确定性的焦虑缓冲。`,
+        aha: `Aha! 学会“转移聚光灯＋陈述句表达认同”（例如：“我猜我刚才那样做，让你感觉被忽略了”），停止陷入无休止的口头自证。`,
+        detail: `在家庭层面，虽被祖辈、父母等多方信任倾诉，也再次确认：你可以真诚聆听，但不必为全家人的情绪过度负责。`
+      },
+      {
+        id: `step-6`,
+        date: `2026-10-01`,
+        sessionLabel: `第7次会谈`,
+        topics: [`family`, `relationship`],
+        isAha: true,
+        shortTitle: `延迟性哀伤温柔流淌，明确“大事底线”与角色平衡`,
+        fact: `坦言独处或委屈时常强烈思念离世的奶奶而落泪，觉得对过往陪伴“常觉亏欠”；如今已养成每天主动给爷爷发消息陪伴的习惯。在未来规划上，明确表达赴日深造的个人底线不会因关系而动摇。`,
+        hypothesis: `在至亲离开后，你曾用理性扛住医院决策与奔波，如今节奏慢下来，延迟的哀伤才得以安全浮现；而经历过真正告别，反而让你对一般分离焦虑没那么恐惧。`,
+        aha: `Aha! 认清自己在“小事上愿意体贴低头，大事上有不可动摇的标准”；并在“平等而不同（Equal but different）”的讨论中重新审视双方的付出与尊重。`,
+        detail: `记下“奶奶值得被思念”，不再因为怕家人担心而把所有哀伤独自锁在心里。`
+      },
+      {
+        id: `step-7`,
+        date: `2026-10-08`,
+        sessionLabel: `第8次会谈`,
+        topics: [`relationship`],
+        isAha: false,
+        shortTitle: `用“两家公司谈合作”重估关系投入的常态节奏`,
+        fact: `复盘彼此的时间期待落差：热恋期多巴胺高涨时曾投入 110%，如今回归日常约 90% 或均衡节奏，而伴侣仍渴望居家时几乎时刻陪伴；你能接受每天约 4 小时高质量相处外加各自忙碌，但不擅长陪着打发无聊。`,
+        hypothesis: `从热恋“110%高投入”回到常态合作模式，双方需要在“各自独立空间”与“共同连接时段”之间重新对齐预期，而不是硬撑高配比。`,
+        aha: ``,
+        detail: `开始把伴侣关系视为两个独立主体共同经营的长期项目，而非单方面靠无限忍耐去维持。`
+      },
+      {
+        id: `step-8`,
+        date: `2026-10-16 ~ 11-13`,
+        sessionLabel: `第9–11次会谈（阶段巩固与诚实自省）`,
+        topics: [`relationship`, `self`],
+        isAha: true,
+        shortTitle: `共创“诚实纸条局”，从嘴硬防御转向真实调适`,
+        fact: `10-16 共创非指责沟通演练与“诚实勇敢纸条游戏”；10-22 守住自身睡眠基本边界，并用吃光饭菜、主动洗碗等微行动传递重视；11-13 自评主业仍稳居 9 分，情感自评虽因大吵反思回落至 5–6 分，但你主动提出将周末游戏由 5 小时缩减至 2 小时做现实测试。`,
+        hypothesis: `11-13 分数回落并非状态恶化，而是停止了早期“粉饰式嘴硬”，真正开始面对“一味装孙子式顺从并不能解决问题，对方期待的是被重视与实际改变”这一真实张力。`,
+        aha: `Aha! 从“表面迎合却内心积怨”跨向“有界限的真诚沟通＋具体行动测试”，看清关系弹性，把选择权稳稳握回自己手中。`,
+        detail: `这标志着第一阶段从“被动承受/克制情绪”正式走向“主动觉察与策略实验”。`
+      }
+    ];
+
+    const SHIFT_DATA = [
+      {
+        oldLabel: `旧脚本 · 早期模式`,
+        oldText: `“为了不吵架，我只能忍着；或者摆事实讲道理，证明错不在我。”`,
+        newLabel: `新视角 · 09-03 / 09-24`,
+        newText: `“磨合不是抹平棱角，而是接受差异存在；先用陈述句稳住情感连接，再处理具体问题。”`
+      },
+      {
+        oldLabel: `旧脚本 · 早期模式`,
+        oldText: `“如果先低头服软、哄对方，就是我太卑微、被拿捏了。”`,
+        newLabel: `新视角 · 09-10`,
+        newText: `“只有真正强大的人才弯得下腰——深知自己的高度在哪里，才敢在僵持时先伸出一只手。”`
+      },
+      {
+        oldLabel: `旧脚本 · 早期模式`,
+        oldText: `“大家都觉得我懂事可靠，那有委屈我也该自己吞下去，别添麻烦。”`,
+        newLabel: `新视角 · 09-10 / 10-01`,
+        newText: `“善解人意是我的选择与力量，而不是讨好他人、不断委屈自己的枷锁。”`
+      }
+    ];
+
+    const NOTE_CARDS = [
+      {
+        type: `纸条示例 · 肯定与感谢卡`,
+        text: `“其实我一直很记得你认真给我做饭、挑衣服的样子，那些细节让我觉得很温暖。”`
+      },
+      {
+        type: `纸条示例 · 温暖回忆卡`,
+        text: `“周末一起出门散步、不用赶时间的那几个下午，是我觉得最轻松、最像家的时候。”`
+      },
+      {
+        type: `纸条示例 · 非指责吐槽卡`,
+        text: `“有时候夜里我很困只想早点睡，并不是觉得和你聊天无聊，只是身体真的需要休息。”`
+      },
+      {
+        type: `纸条示例 · 安全暂停卡`,
+        text: `“我现在情绪有点上头，怕说出伤人的话，我想先听听你的感受，过一会儿我们再聊这件事。”`
+      }
+    ];
+
+    let activeFilter = `all`;
+    let filteredNodes = TIMELINE_DATA.slice();
+    let currentStepIndex = 0;
+    let shiftStates = [true, true, true]; // true = show new perspective
+    let noteDrawIndex = 0;
+    let growthChartInstance = null;
+
+    let appState = {
+      checkedTools: {},
+      pinnedNext: {},
+      memoText: ``
+    };
+
+    // Hoisted event handlers for all interactive controls
+    function jumpToSection(sectionId, btn) {
+      const target = document.getElementById(sectionId);
+      if (target) {
+        target.scrollIntoView({ behavior: `smooth`, block: `start` });
+      }
+      const nav = document.getElementById(`guide-nav`);
+      if (nav) {
+        const chips = nav.querySelectorAll(`.step-chip`);
+        chips.forEach(function (c) { c.classList.remove(`is-active`); });
+      }
+      if (btn) btn.classList.add(`is-active`);
+    }
+
+    function filterTimeline(topic, btn) {
+      activeFilter = topic;
+      const toolbar = btn ? btn.closest(`.filter-toolbar`) : null;
+      if (toolbar) {
+        toolbar.querySelectorAll(`.filter-btn`).forEach(function (b) {
+          b.classList.remove(`is-active`);
+        });
+      }
+      if (btn) btn.classList.add(`is-active`);
+
+      if (topic === `all`) {
+        filteredNodes = TIMELINE_DATA.slice();
+      } else if (topic === `aha`) {
+        filteredNodes = TIMELINE_DATA.filter(function (item) { return item.isAha; });
+      } else {
+        filteredNodes = TIMELINE_DATA.filter(function (item) {
+          return item.topics.indexOf(topic) !== -1;
+        });
+      }
+      currentStepIndex = 0;
+      renderTimeline();
+    }
+
+    function selectTimelineStep(index) {
+      if (index < 0 || index >= filteredNodes.length) return;
+      currentStepIndex = index;
+      renderTimeline();
+    }
+
+    function stepTimeline(delta) {
+      const next = currentStepIndex + delta;
+      if (next >= 0 && next < filteredNodes.length) {
+        currentStepIndex = next;
+        renderTimeline();
+      }
+    }
+
+    function renderTimeline() {
+      const rail = document.getElementById(`timeline-rail`);
+      const detail = document.getElementById(`timeline-detail`);
+      if (!rail || !detail) return;
+
+      if (filteredNodes.length === 0) {
+        rail.innerHTML = ``;
+        detail.innerHTML = `<p style="margin:0;color:var(--on-surface-variant);">当前筛选条件下暂无节点，请切换其他分类查看。</p>`;
+        return;
+      }
+
+      let railHtml = ``;
+      filteredNodes.forEach(function (item, idx) {
+        const isSel = idx === currentStepIndex ? `is-selected` : ``;
+        const ahaBadge = item.isAha ? `<span class="aha-pill">Aha! 突破</span>` : ``;
+        railHtml += `
+          <button type="button" class="timeline-node-btn ${isSel}" onclick="selectTimelineStep(${idx})">
+            <div class="node-meta-row">
+              <span class="node-date">${item.date}</span>
+              ${ahaBadge}
+            </div>
+            <span class="node-short-title">${item.shortTitle}</span>
+          </button>
+        `;
+      });
+      rail.innerHTML = railHtml;
+
+      const cur = filteredNodes[currentStepIndex];
+      const prevDisabled = currentStepIndex === 0 ? `disabled` : ``;
+      const nextDisabled = currentStepIndex === filteredNodes.length - 1 ? `disabled` : ``;
+      const ahaBlock = cur.aha
+        ? `<div class="aha-callout">
+             <i data-lucide="lightbulb" aria-hidden="true" style="width:20px;height:20px;flex-shrink:0;margin-top:2px;"></i>
+             <div>
+               <div class="aha-callout-title">突破时刻（Aha! Moment）</div>
+               <div style="font-size:0.93rem;">${cur.aha}</div>
+             </div>
+           </div>`
+        : ``;
+
+      detail.innerHTML = `
+        <div class="stepper-header">
+          <div>
+            <span class="step-counter">节点 ${currentStepIndex + 1} / ${filteredNodes.length} · ${cur.date}</span>
+            <div style="font-size:0.84rem;color:var(--on-surface-variant);margin-top:4px;">来源：${cur.sessionLabel}</div>
+          </div>
+          <div class="stepper-controls">
+            <button type="button" class="btn-secondary" ${prevDisabled} onclick="stepTimeline(-1)">上一步</button>
+            <button type="button" class="btn-primary" ${nextDisabled} onclick="stepTimeline(1)">下一步</button>
+          </div>
+        </div>
+
+        <h3 style="font-family:var(--font-headline);margin:0;font-size:1.25rem;color:var(--on-surface);">${cur.shortTitle}</h3>
+
+        <div class="epistemic-row">
+          <div class="fact-box">
+            <span class="tag-epistemic tag-fact">记录事实（会谈原述）</span>
+            <p style="margin:0;font-size:0.94rem;">${cur.fact}</p>
+          </div>
+          <div class="hypothesis-box">
+            <span class="tag-epistemic tag-hyp">模式推演（咨询探讨视角）</span>
+            <p style="margin:0;font-size:0.94rem;color:var(--on-surface-variant);">${cur.hypothesis}</p>
+          </div>
+        </div>
+
+        ${ahaBlock}
+
+        <details class="note-fold">
+          <summary>
+            <span>展开阶段背景补充</span>
+            <i data-lucide="chevron-down" aria-hidden="true" style="width:16px;height:16px"></i>
+          </summary>
+          <div class="fold-body">${cur.detail}</div>
+        </details>
+      `;
+
+      refreshIcons();
+    }
+
+    // Module 3: Board filtering & view switching
+    function filterBoard(topic, btn) {
+      const toolbar = btn ? btn.closest(`.filter-group`) : null;
+      if (toolbar) {
+        toolbar.querySelectorAll(`.filter-btn`).forEach(function (b) {
+          b.classList.remove(`is-active`);
+        });
+      }
+      if (btn) btn.classList.add(`is-active`);
+
+      const cards = document.querySelectorAll(`#board-cards-view .issue-card`);
+      cards.forEach(function (card) {
+        if (topic === `all` || card.dataset.topic === topic) {
+          card.classList.remove(`is-hidden`);
+        } else {
+          card.classList.add(`is-hidden`);
+        }
+      });
+
+      const rows = document.querySelectorAll(`#board-table-view tbody tr`);
+      rows.forEach(function (row) {
+        if (topic === `all` || row.dataset.topic === topic) {
+          row.classList.remove(`is-hidden`);
+        } else {
+          row.classList.add(`is-hidden`);
+        }
+      });
+    }
+
+    function setBoardView(mode) {
+      const cardsView = document.getElementById(`board-cards-view`);
+      const tableView = document.getElementById(`board-table-view`);
+      const btnCards = document.getElementById(`btn-view-cards`);
+      const btnTable = document.getElementById(`btn-view-table`);
+      if (!cardsView || !tableView || !btnCards || !btnTable) return;
+
+      if (mode === `table`) {
+        cardsView.classList.add(`is-hidden`);
+        tableView.classList.remove(`is-hidden`);
+        btnCards.classList.remove(`is-active`);
+        btnTable.classList.add(`is-active`);
+      } else {
+        tableView.classList.add(`is-hidden`);
+        cardsView.classList.remove(`is-hidden`);
+        btnTable.classList.remove(`is-active`);
+        btnCards.classList.add(`is-active`);
+      }
+    }
+
+    // Module 4: Mindset shift toggle
+    function toggleShift(idx, btn) {
+      shiftStates[idx] = !shiftStates[idx];
+      const badge = document.getElementById(`shift-badge-${idx}`);
+      const text = document.getElementById(`shift-text-${idx}`);
+      const item = SHIFT_DATA[idx];
+      if (!badge || !text || !item) return;
+
+      if (shiftStates[idx]) {
+        badge.textContent = item.newLabel;
+        badge.className = `shift-pill is-new`;
+        text.textContent = item.newText;
+        text.style.color = `var(--on-surface)`;
+        if (btn) btn.textContent = `对比旧脚本`;
+      } else {
+        badge.textContent = item.oldLabel;
+        badge.className = `shift-pill is-old`;
+        text.textContent = item.oldText;
+        text.style.color = `var(--on-surface-variant)`;
+        if (btn) btn.textContent = `回到新视角`;
+      }
+    }
+
+    // Module 5: Toolkit interactions
+    function setSimMode(mode) {
+      const trapBtn = document.getElementById(`sim-btn-trap`);
+      const newBtn = document.getElementById(`sim-btn-new`);
+      const output = document.getElementById(`sim-output`);
+      if (!trapBtn || !newBtn || !output) return;
+
+      if (mode === `new`) {
+        trapBtn.classList.remove(`is-active`);
+        newBtn.classList.add(`is-active`);
+        output.classList.remove(`is-trap`);
+        output.innerHTML = `
+          <strong>陈述句回应示范：</strong>“我猜我刚才那样做，让你觉得被忽略、有点委屈了吧？其实我心里很在乎你，只是刚才我也有点累，想先缓一缓。”<br>
+          <span style="font-size:0.82rem;color:var(--primary);">→ 先稳住连接再谈感受，绕开“争对错”的防卫开关。</span>
+        `;
+      } else {
+        newBtn.classList.remove(`is-active`);
+        trapBtn.classList.add(`is-active`);
+        output.classList.add(`is-trap`);
+        output.innerHTML = `
+          <strong>容易踩坑的回应：</strong>“我没有不重视你啊，这周我还给你买菜做这做那，怎么就变成我的错了？”<br>
+          <span style="font-size:0.82rem;color:var(--on-surface-variant);">→ 触发对方更强防御，陷入争输赢死循环。</span>
+        `;
+      }
+    }
+
+    function drawNextNoteCard() {
+      noteDrawIndex = (noteDrawIndex + 1) % NOTE_CARDS.length;
+      const typeEl = document.getElementById(`drawn-card-type`);
+      const textEl = document.getElementById(`drawn-card-text`);
+      const item = NOTE_CARDS[noteDrawIndex];
+      if (typeEl && textEl && item) {
+        typeEl.textContent = item.type;
+        textEl.textContent = item.text;
+      }
+    }
+
+    // State persistence helpers
+    async function persistState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+        try {
+          await window.notebookAppApi.setAppState(appState);
+        } catch (err) {
+          // Graceful fallback if host unavailable
+        }
+      }
+    }
+
+    function handleCheckChange() {
+      const inputs = document.querySelectorAll(`#toolkit-checklist input[type="checkbox"]`);
+      const nextTools = {};
+      inputs.forEach(function (inp) {
+        const key = inp.getAttribute(`data-check-id`);
+        if (key) nextTools[key] = inp.checked;
+      });
+      appState.checkedTools = nextTools;
+      persistState();
+    }
+
+    function toggleNextPin(id, checkbox) {
+      appState.pinnedNext[id] = Boolean(checkbox && checkbox.checked);
+      const card = document.querySelector(`.next-card[data-next-id="${id}"]`);
+      if (card) {
+        if (appState.pinnedNext[id]) {
+          card.classList.add(`is-pinned`);
+        } else {
+          card.classList.remove(`is-pinned`);
+        }
+      }
+      persistState();
+    }
+
+    async function saveMemoNote() {
+      const input = document.getElementById(`client-memo-input`);
+      const status = document.getElementById(`save-status-msg`);
+      if (!input) return;
+      appState.memoText = input.value.trim();
+      await persistState();
+      if (status) {
+        status.textContent = appState.memoText
+          ? `手记已保存，下次打开仍可继续查看。`
+          : `已更新为空白备忘。`;
+      }
+    }
+
+    async function resetUserNotes(btn) {
+      if (!btn) return;
+      if (btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.textContent = `再次点击确认清空`;
+        return;
+      }
+      btn.dataset.armed = `false`;
+      btn.textContent = `清空勾选与手记`;
+
+      appState = { checkedTools: {}, pinnedNext: {}, memoText: `` };
+      applyStateToDom();
+      await persistState();
+      const status = document.getElementById(`save-status-msg`);
+      if (status) status.textContent = `已清空本地勾选与备忘。`;
+    }
+
+    function applyStateToDom() {
+      const toolInputs = document.querySelectorAll(`#toolkit-checklist input[type="checkbox"]`);
+      toolInputs.forEach(function (inp) {
+        const key = inp.getAttribute(`data-check-id`);
+        inp.checked = Boolean(key && appState.checkedTools && appState.checkedTools[key]);
+      });
+
+      const nextInputs = document.querySelectorAll(`#next-steps-grid input[type="checkbox"]`);
+      nextInputs.forEach(function (inp) {
+        const key = inp.getAttribute(`data-next-check`);
+        const isChecked = Boolean(key && appState.pinnedNext && appState.pinnedNext[key]);
+        inp.checked = isChecked;
+        const card = document.querySelector(`.next-card[data-next-id="${key}"]`);
+        if (card) {
+          if (isChecked) card.classList.add(`is-pinned`);
+          else card.classList.remove(`is-pinned`);
+        }
+      });
+
+      const memoInput = document.getElementById(`client-memo-input`);
+      if (memoInput) memoInput.value = appState.memoText || ``;
+    }
+
+    function renderGrowthChart() {
+      const canvas = document.getElementById(`growthChart`);
+      if (!canvas || typeof Chart === `undefined`) return;
+
+      const styles = getComputedStyle(document.documentElement);
+      const colPrimary = styles.getPropertyValue(`--primary`).trim() || `#3E765D`;
+      const colSage = styles.getPropertyValue(`--chart-sage`).trim() || `#98B99D`;
+      const colText = styles.getPropertyValue(`--on-surface`).trim() || `#1E3228`;
+      const colGrid = styles.getPropertyValue(`--outline-variant`).trim() || `#C2D2C6`;
+
+      if (growthChartInstance) {
+        growthChartInstance.destroy();
+      }
+
+      growthChartInstance = new Chart(canvas, {
+        type: `bar`,
+        data: {
+          labels: [
+            `08-01 恋爱正向占比`,
+            `09-03/10-16 同居正向占比`,
+            `11-13 主业自评 (×10%)`,
+            `11-13 关系体验自评 (×10%)`
+          ],
+          datasets: [
+            {
+              label: `正向 / 满意度（%）`,
+              data: [90, 70, 90, 55],
+              backgroundColor: [colSage, colSage, colPrimary, colPrimary],
+              borderRadius: 8,
+              maxBarThickness: 46
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  if (ctx.dataIndex === 2) return `主业/学业自评：9 / 10 分（90%）`;
+                  if (ctx.dataIndex === 3) return `情感体验自评：5–6 / 10 分（约 55%，因正视磨合而回调）`;
+                  return `正向体验占比：约 ${ctx.parsed.y}%`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: colGrid },
+              ticks: {
+                color: colText,
+                callback: function (val) { return `${val}%`; }
+              }
+            },
+            x: {
+              grid: { display: false },
+              ticks: {
+                color: colText,
+                font: { size: 11 }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function refreshIcons() {
+      if (window.lucide && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+    }
+
+    async function initApp() {
+      renderTimeline();
+      renderGrowthChart();
+      refreshIcons();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === `object`) {
+            appState = {
+              checkedTools: saved.checkedTools || {},
+              pinnedNext: saved.pinnedNext || {},
+              memoText: saved.memoText || ``
+            };
+            applyStateToDom();
+          }
+        } catch (err) {
+          // Ignore unavailable state
+        }
+      }
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener(`DOMContentLoaded`, initApp);
+  </script>
+</body>
+</html>
